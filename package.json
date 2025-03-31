@@ -1,0 +1,37 @@
+{
+  "name": "folder-scan",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsnd -r tsconfig-paths/register src/app.ts"
+  },
+  "keywords": [
+    "folder",
+    "scan",
+    "files",
+    "database",
+    "puppeteer",
+    "screenshot"
+  ],
+  "author": "Alejandro Repizo",
+  "license": "ISC",
+  "description": "This is a node script to scan a folder and get the files that are not in the database. It uses puppeteer to take screenshots of the files.",
+  "devDependencies": {
+    "@eslint/js": "^9.23.0",
+    "@types/node": "^22.13.14",
+    "eslint": "^9.23.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "globals": "^16.0.0",
+    "prettier": "^3.5.3",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.29.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "env-var": "^7.5.0",
+    "puppeteer": "^24.4.0"
+  }
+}

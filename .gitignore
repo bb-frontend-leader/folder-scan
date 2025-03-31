@@ -1,0 +1,5 @@
+node_modules
+data
+ovas.json
+package-lock.json
+.env
