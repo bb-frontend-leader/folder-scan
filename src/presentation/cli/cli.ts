@@ -9,7 +9,7 @@ import { envs } from "@/config/plugins/envs.plugin";
 
 
 const fileSystemOvaRepository = new OvaRepositoryImpl(new FileSystemDataSource())
-const PuppeteerScreenShot = new TakeScreenShot(new PuppeteerScreenShotService(envs.SCREENSHOT_PATH))
+const PuppeteerScreenShot = new TakeScreenShot(new PuppeteerScreenShotService(envs.SCREENSHOTS_STORAGE_PATH))
 
 export class Cli {
     public static execute(): void {
@@ -17,8 +17,8 @@ export class Cli {
         console.log('🚀  Folder Scan CLI - Starting');
         console.log('='.repeat(40) + '\n');
 
-        console.log(`📁  Folder to Scan      : ${envs.FOLDER_TO_SCAN_PATH}`);
-        console.log(`📷  Screenshot Directory: ${envs.SCREENSHOT_PATH}`);
+        console.log(`📁  Folder to Scan      : ${envs.SCAN_FOLDER_PATH}`);
+        console.log(`📷  Screenshot Directory: ${envs.SCREENSHOTS_STORAGE_PATH}`);
         console.log(`📚  Scan data output    : ovas.json\n`);
 
         console.log('='.repeat(40));
@@ -28,7 +28,7 @@ export class Cli {
         new ScanFolder(
             fileSystemOvaRepository,
             PuppeteerScreenShot
-        ).execute(envs.FOLDER_TO_SCAN_PATH).then(() => {
+        ).execute(envs.SCAN_FOLDER_PATH).then(() => {
             console.log('✅ Scan process completed successfully! 🎉 All folders have been processed.');
         }).catch((error) => {
             console.error('\n❌  ERROR: Scan process failed! 😥');

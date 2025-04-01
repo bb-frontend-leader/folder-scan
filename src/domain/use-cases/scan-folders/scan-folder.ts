@@ -4,6 +4,8 @@ import { OvaEntity } from '@domain/entities/ova.entity';
 import { OvaRepository } from '@domain/repository/ova.repository';
 import { TakeScreenShot } from '@domain/use-cases/take-screenshot/take-screenshot';
 
+import { envs } from '@/config/plugins/envs.plugin';
+
 type FileType = 'Audio' | 'Video' | 'VideoSignLanguage' | 'Subtitles' | 'AudioDescription';
 
 interface ScanFolderUseCase {
@@ -19,7 +21,7 @@ export class ScanFolder implements ScanFolderUseCase {
     public async execute(ovasPath: string): Promise<void> {
         const folders = await this.getFolders(ovasPath);
         for (const folder of folders) {
-            const screenshot = await this.takeScreenShot.execute(`${folder.name}-${folder.parentPath}`, `https://demos.booksandbooksdigital.com.co/200-ovas-2025/${folder.name}`);
+            const screenshot = await this.takeScreenShot.execute(`${folder.name}-${folder.parentPath}`, `${envs.SCREENSHOTS_STORAGE_URL}${folder.name}`);
          
             if (!screenshot) {
                 console.error(`Screenshot failed for ${folder.name}`);
