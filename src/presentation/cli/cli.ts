@@ -13,15 +13,28 @@ const PuppeteerScreenShot = new TakeScreenShot(new PuppeteerScreenShotService(en
 
 export class Cli {
     public static execute(): void {
-        console.log('CLI started!');
+        console.log('\n' + '='.repeat(40));
+        console.log('🚀  Folder Scan CLI - Starting');
+        console.log('='.repeat(40) + '\n');
+
+        console.log(`📁  Folder to Scan      : ${envs.FOLDER_TO_SCAN_PATH}`);
+        console.log(`📷  Screenshot Directory: ${envs.SCREENSHOT_PATH}`);
+        console.log(`📚  Scan data output    : ovas.json\n`);
+
+        console.log('='.repeat(40));
+        console.log('🔍  Initiating scan process...');
+        console.log('='.repeat(40) + '\n');
 
         new ScanFolder(
             fileSystemOvaRepository,
             PuppeteerScreenShot
         ).execute(envs.FOLDER_TO_SCAN_PATH).then(() => {
-            console.log('Scan completed!');
+            console.log('✅ Scan process completed successfully! 🎉 All folders have been processed.');
         }).catch((error) => {
-            console.error('Error during scan:', error);
+            console.error('\n❌  ERROR: Scan process failed! 😥');
+            console.error('='.repeat(40));
+            console.error(error);
+            console.error('='.repeat(40) + '\n');
         })
     }
 }

@@ -17,7 +17,10 @@ export class Server {
 
     public start(): void {
         this.app.listen(this.port, () => {
-            console.log(`Server is running on port ${this.port}`);
+            console.log('\n' + '='.repeat(40));
+            console.log('\x1b[32m🚀  API - Starting\x1b[0m'); // Verde para el título
+            console.log(`Server is running on port \x1b[33m${this.port}\x1b[0m`); // Amarillo para el puerto
+            console.log('='.repeat(40) + '\n');
         });
     }
 

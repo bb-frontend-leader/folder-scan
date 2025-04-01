@@ -1,3 +1,4 @@
+
 import { Server } from "./presentation/api/server";
 import { Cli } from "./presentation/cli/cli";
 
@@ -6,9 +7,10 @@ import { Cli } from "./presentation/cli/cli";
 })()
 
 function main() {
-    Cli.execute();
-    
     // Server
     const api = new Server(3001)
-    // api.start()
+    api.start()
+
+    // CLI
+    Cli.execute();
 }

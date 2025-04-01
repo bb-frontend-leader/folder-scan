@@ -16,14 +16,27 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
             fs.mkdirSync(this.path, { recursive: true });
         }
 
+        console.log('\n📸 Starting screenshot process...');
+        console.log('-----------------------------------');
+        console.log('🖥️  Launching browser...');
+
         const browser = await puppeteer.launch({ headless: true });
         const page = await browser.newPage();
 
+        console.log('🌐 Navigating to URL...');
+        console.log(`   URL: ${url}`);
+
         await page.goto(url, { waitUntil: 'networkidle2' });
+
+        console.log('🤳 Capturing screenshot...');
+        console.log(`   Saving to: ${screenShotPath}`);
 
         await page.screenshot({ path: screenShotPath });
         await browser.close();
-        
-        return new Screenshot(screenShotPath)
+
+        console.log('✅ Screenshot process completed!');
+        console.log('-----------------------------------\n');
+
+        return new Screenshot(screenShotPath);
     }
 }
