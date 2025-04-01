@@ -5,10 +5,19 @@ import { OvaEntity } from "@domain/entities/ova.entity";
 
 export class FileSystemDataSource implements OvaDataSource {
 
-    private readonly ovaPath = 'ovas.json';
+    private readonly ovaDir = 'data/';
+    private readonly ovaPath = 'data/ovas.json';
 
     constructor() {
+        this.initializeOvaDir();
         this.initializeBaseOvaFile();
+        
+    }
+
+    private async initializeOvaDir() {
+        if (!fs.existsSync(this.ovaDir)) {
+            fs.mkdirSync(this.ovaDir, { recursive: true });
+        }
     }
 
     private async initializeBaseOvaFile() {
@@ -24,7 +33,6 @@ export class FileSystemDataSource implements OvaDataSource {
         } catch (error) {
             console.error('Error saving OVA:', error);
         }
-
     }
 
     public async get(): Promise<OvaEntity[]> {

@@ -3,7 +3,12 @@ import { randomUUID } from "node:crypto";
 interface OvaEntityOptions {
     name: string;
     coverPath: string;
-    filePath: string;
+    hasAudio: boolean;
+    hasAudioDescription: boolean;
+    parentFolder?: string;
+    hasVideo: boolean;
+    hasSubtitles: boolean;
+    hasVideoSignLanguage: boolean;
 }
 
 export class OvaEntity {
@@ -11,17 +16,27 @@ export class OvaEntity {
     public id: string;
     public name: string;
     public coverPath: string;
-    public filePath: string;
+    public hasAudio: boolean = false;
+    public hasAudioDescription: boolean = false;
+    public hasVideo: boolean = false;
+    public hasSubtitles: boolean = false;
+    public hasVideoSignLanguage: boolean = false;
+    public parentFolder: string = 'root'; // Default value for parentFolder
 
     constructor(
         options: OvaEntityOptions
     ) {
-        const { name, coverPath, filePath } = options;
+        const { name, coverPath, hasAudio, hasAudioDescription, hasSubtitles, parentFolder, hasVideo, hasVideoSignLanguage } = options;
 
         // Assigning values to properties
         this.id = randomUUID(); // Generates a unique identifier for the OvaEntity instance
         this.name = name;
+        this.parentFolder = parentFolder || 'root'; // Default to 'root' if parentFolder is not provided
         this.coverPath = coverPath;
-        this.filePath = filePath;
+        this.hasAudio = hasAudio;
+        this.hasAudioDescription = hasAudioDescription;
+        this.hasVideo = hasVideo;
+        this.hasSubtitles = hasSubtitles;
+        this.hasVideoSignLanguage = hasVideoSignLanguage;
     }
 }

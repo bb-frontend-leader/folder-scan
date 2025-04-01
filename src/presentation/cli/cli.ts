@@ -11,9 +11,9 @@ import { envs } from "@/config/plugins/envs.plugin";
 const fileSystemOvaRepository = new OvaRepositoryImpl(new FileSystemDataSource())
 const PuppeteerScreenShot = new TakeScreenShot(new PuppeteerScreenShotService(envs.SCREENSHOT_PATH))
 
-export class Server {
-    public static start(): void {
-        console.log('Server started!');
+export class Cli {
+    public static execute(): void {
+        console.log('CLI started!');
 
         new ScanFolder(
             fileSystemOvaRepository,
