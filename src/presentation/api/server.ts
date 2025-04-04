@@ -12,7 +12,7 @@ export class Server {
         this.app = express();
         this.app.disable('x-powered-by');
         this.app.use(json());
-        this.app.use('/ovas', ovasRouter)
+        this.app.use('/api/ovas', ovasRouter)
     }
 
     public start(): void {

@@ -11,4 +11,12 @@ export class OvaController {
         }
         res.json(ovas);
     }
+    
+    static async getAllOvaGroups(req: Request, res: Response) {
+        const groups = await OvasModel.getAllOvaGroups();
+        if (groups.length < 0) {
+            return res.status(404).json({ message: "No OVAs found" });
+        }
+        res.json(groups);
+    }
 }

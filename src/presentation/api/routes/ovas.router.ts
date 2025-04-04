@@ -11,3 +11,11 @@ ovasRouter.get('/', async (req, res, next) => {
         next(error)
     }
 })
+
+ovasRouter.get('/groups', async(req, res, next) => {
+    try {
+        await OvaController.getAllOvaGroups(req, res)
+    } catch (error) {
+        next(error)
+    }
+})

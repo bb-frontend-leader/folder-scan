@@ -5,6 +5,8 @@ import puppeteer from 'puppeteer';
 import { Screenshot } from '@domain/entities/screenshot.entity';
 import { ScreenshotRepository } from '@domain/repository/screenshot.repository';
 
+import { envs } from '@/config/plugins/envs.plugin';
+
 
 export class PuppeteerScreenShotService implements ScreenshotRepository {
     constructor (public readonly path: string){}
@@ -37,6 +39,9 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
         console.log('✅ Screenshot process completed!');
         console.log('-----------------------------------\n');
 
-        return new Screenshot(screenShotPath);
+        const cleanPath = screenShotPath.replace(/^\.\/?/, '');
+        const screenShotImagePath = `${envs.SCREENSHOTS_STORAGE_URL}${cleanPath}`
+
+        return new Screenshot(screenShotImagePath);
     }
 }
