@@ -16,4 +16,12 @@ export class OvasModel {
         // Extraer los grupos de OVA únicos
         return Array.from(new Set(ovas.map(ova => ova.parentFolder)));
     }
+
+    static async getOvaById(id: string) {
+        const data = fs.readFileSync('data/ovas.json', 'utf-8');
+        const ovas = JSON.parse(data) as OvaEntity[];
+        // Buscar el OVA por ID
+        const ova = ovas.find(ova => ova.id === id);
+        return ova;
+    }
 }

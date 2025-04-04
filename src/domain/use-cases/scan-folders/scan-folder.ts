@@ -30,6 +30,7 @@ export class ScanFolder implements ScanFolderUseCase {
             const ova = new OvaEntity({
                 name: folder.name,
                 coverPath: screenshot.screenShotPath,
+                ovaPath: folder.folderPath,
                 hasAudio: await this.hasFileType(folder.folderPath, 'Audio'),
                 hasAudioDescription: await this.hasFileType(folder.folderPath, 'AudioDescription'),
                 hasSubtitles: await this.hasFileType(folder.folderPath, 'Subtitles'),

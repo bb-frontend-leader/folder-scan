@@ -19,4 +19,13 @@ export class OvaController {
         }
         res.json(groups);
     }
+
+    static async getOvaById(req: Request, res: Response) {
+        const { id } = req.params;
+        const ova = await OvasModel.getOvaById(id);
+        if (!ova) {
+            return res.status(404).json({ message: "OVA not found" });
+        }
+        res.json(ova);
+    }
 }
