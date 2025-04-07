@@ -3,7 +3,10 @@ import { randomUUID } from "node:crypto";
 interface OvaEntityOptions {
     name: string;
     coverPath: string;
-    ovaPath: string;
+    ovaPath: {
+        server: string;
+        local: string;
+    };
     hasAudio: boolean;
     hasAudioDescription: boolean;
     parentFolder?: string;
@@ -17,7 +20,10 @@ export class OvaEntity {
     public id: string;
     public name: string;
     public coverPath: string;
-    public ovaPath: string;
+    public ovaPath: {
+        server: string;
+        local: string;
+    };
     public hasAudio: boolean = false;
     public hasAudioDescription: boolean = false;
     public hasVideo: boolean = false;

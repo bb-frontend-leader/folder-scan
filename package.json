@@ -18,6 +18,7 @@
   "description": "This is a node script to scan a folder and get the files that are not in the database. It uses puppeteer to take screenshots of the files.",
   "devDependencies": {
     "@eslint/js": "^9.23.0",
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/node": "^22.13.14",
     "eslint": "^9.23.0",
@@ -31,6 +32,7 @@
     "typescript-eslint": "^8.29.0"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "env-var": "^7.5.0",
     "express": "^5.1.0",

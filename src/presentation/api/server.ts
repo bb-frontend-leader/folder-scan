@@ -1,5 +1,6 @@
 import express, { json } from 'express';
 
+import { corsMiddleware } from './middlewares/cors';
 import { ovasRouter } from './routes/ovas.router';
 
 
@@ -10,8 +11,9 @@ export class Server {
     constructor(port: number) {
         this.port = port;
         this.app = express();
-        this.app.disable('x-powered-by');
         this.app.use(json());
+        this.app.use(corsMiddleware())
+        this.app.disable('x-powered-by');
         this.app.use('/api/ovas', ovasRouter)
     }
 

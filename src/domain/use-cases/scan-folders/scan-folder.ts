@@ -21,7 +21,7 @@ export class ScanFolder implements ScanFolderUseCase {
     public async execute(ovasPath: string): Promise<void> {
         const folders = await this.getFolders(ovasPath);
         for (const folder of folders) {
-            const screenshot = await this.takeScreenShot.execute(`${folder.name}-${folder.parentPath}`, `${envs.SCREENSHOTS_STORAGE_URL}${folder.name}`);
+            const screenshot = await this.takeScreenShot.execute(`${folder.name}-${folder.parentPath}`, `${envs.SCREENSHOTS_STORAGE_URL}${folder.parentPath}/${folder.name}`);
          
             if (!screenshot) {
                 console.error(`Screenshot failed for ${folder.name}`);
@@ -30,7 +30,10 @@ export class ScanFolder implements ScanFolderUseCase {
             const ova = new OvaEntity({
                 name: folder.name,
                 coverPath: screenshot.screenShotPath,
-                ovaPath: folder.folderPath,
+                ovaPath: {
+                    server: `${envs.OVA_URL}${folder.parentPath}/${folder.name}`,
+                    local: folder.folderPath,
+                },
                 hasAudio: await this.hasFileType(folder.folderPath, 'Audio'),
                 hasAudioDescription: await this.hasFileType(folder.folderPath, 'AudioDescription'),
                 hasSubtitles: await this.hasFileType(folder.folderPath, 'Subtitles'),

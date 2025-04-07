@@ -19,7 +19,7 @@ export class ZipController {
         const zipService = new JSZipService();
         const generateZip = new ZipFolderUseCase(zipService);
 
-        const zipBuffer = await generateZip.execute(ovaPath);
+        const zipBuffer = await generateZip.execute(ovaPath.local);
 
         res.setHeader("Content-Disposition", `attachment; filename=${name}.zip`);
         res.setHeader("Content-Type", "application/zip");
