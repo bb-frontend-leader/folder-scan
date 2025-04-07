@@ -1,11 +1,9 @@
 
 import cors from 'cors'
 
-import { envs } from '@/config/plugins/envs.plugin'
-
 const ACCEPTED_ORIGINS = [
     'http://localhost:4321',
-    envs.SCREENSHOTS_STORAGE_URL,
+    'https://demos.booksandbooksdigital.com.co/200-ovas-2025/',
   ]
   
 export const corsMiddleware = ({ 

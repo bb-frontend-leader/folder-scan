@@ -1,11 +1,9 @@
-import { ScanFolder } from "@domain/use-cases/scan-folders/scan-folder";
-import { TakeScreenShot } from "@domain/use-cases/take-screenshot/take-screenshot";
-
-import { FileSystemDataSource } from "@infrastructure/datasources/file-system.datasource";
-import { OvaRepositoryImpl } from "@infrastructure/repositories/ova.repositories.impl";
-import { PuppeteerScreenShotService } from '@infrastructure/services/puppeteer-screenshot.service';
-
-import { envs } from "@/config/plugins/envs.plugin";
+import { envs } from "../../config/plugins/envs.plugin";
+import { ScanFolder } from "../../domain/use-cases/scan-folders/scan-folder";
+import { TakeScreenShot } from "../../domain/use-cases/take-screenshot/take-screenshot";
+import { FileSystemDataSource } from "../../infrastructure/datasources/file-system.datasource";
+import { OvaRepositoryImpl } from "../../infrastructure/repositories/ova.repositories.impl";
+import { PuppeteerScreenShotService } from '../../infrastructure/services/puppeteer-screenshot.service';
 
 
 const fileSystemOvaRepository = new OvaRepositoryImpl(new FileSystemDataSource())

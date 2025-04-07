@@ -1,4 +1,4 @@
-import { OvaEntity } from "@domain/entities/ova.entity";
+import { OvaEntity } from "../entities/ova.entity";
 
 export abstract class OvaRepository {
     abstract save(ova: OvaEntity): Promise<void>;

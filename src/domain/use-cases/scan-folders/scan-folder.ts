@@ -1,10 +1,9 @@
 import fs from 'node:fs/promises';
 
-import { OvaEntity } from '@domain/entities/ova.entity';
-import { OvaRepository } from '@domain/repository/ova.repository';
-import { TakeScreenShot } from '@domain/use-cases/take-screenshot/take-screenshot';
-
-import { envs } from '@/config/plugins/envs.plugin';
+import { envs } from '../../../config/plugins/envs.plugin';
+import { OvaEntity } from '../../entities/ova.entity';
+import { OvaRepository } from  '../../repository/ova.repository'
+import { TakeScreenShot } from '../take-screenshot/take-screenshot';
 
 type FileType = 'Audio' | 'Video' | 'VideoSignLanguage' | 'Subtitles' | 'AudioDescription';
 

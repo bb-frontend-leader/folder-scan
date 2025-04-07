@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 
-import { OvaDataSource } from "@domain/datasources/ova.datasource";
-import { OvaEntity } from "@domain/entities/ova.entity";
+import { OvaDataSource } from "../../domain/datasources/ova.datasource";
+import { OvaEntity } from "../../domain/entities/ova.entity";
 
 export class FileSystemDataSource implements OvaDataSource {
 

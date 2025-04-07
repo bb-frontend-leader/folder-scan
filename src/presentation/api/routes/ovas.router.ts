@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { OvaController } from '@api/controllers/ova.controller'
 
+import { OvaController } from '../controllers/ova.controller'
 import { ZipController } from '../controllers/zip.controller'
 
 export const ovasRouter = Router()

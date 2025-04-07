@@ -3,3 +3,5 @@ data
 ovas.json
 package-lock.json
 .env
+dist
+tsconfig.tsbuildinfo

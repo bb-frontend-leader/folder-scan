@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-import { OvaEntity } from '@/domain/entities/ova.entity';
+import { OvaEntity } from '../../../../domain/entities/ova.entity';
 
 
 export class OvasModel {

@@ -2,10 +2,9 @@
 import fs from 'node:fs';
 import puppeteer from 'puppeteer';
 
-import { Screenshot } from '@domain/entities/screenshot.entity';
-import { ScreenshotRepository } from '@domain/repository/screenshot.repository';
-
-import { envs } from '@/config/plugins/envs.plugin';
+import { envs } from '../../config/plugins/envs.plugin'
+import { Screenshot } from '../../domain/entities/screenshot.entity';
+import { ScreenshotRepository } from '../../domain/repository/screenshot.repository';
 
 
 export class PuppeteerScreenShotService implements ScreenshotRepository {

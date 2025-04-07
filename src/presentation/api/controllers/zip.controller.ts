@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 
-import { ZipFolderUseCase } from "@/domain/use-cases/zip-folder/zip-folder";
-import { JSZipService } from "@/infrastructure/services/jszip.service";
-
+import { ZipFolderUseCase } from "../../../domain/use-cases/zip-folder/zip-folder";
+import { JSZipService } from "../../../infrastructure/services/jszip.service";
 import { OvasModel } from "../models/loca-file-system/ovas";
 
 export class ZipController {

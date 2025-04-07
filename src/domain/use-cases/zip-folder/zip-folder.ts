@@ -1,4 +1,4 @@
-import { ZipRepository } from "@/domain/repository/zip.repository";
+import { ZipRepository } from "../../repository/zip.repository";
 
 
 export class ZipFolderUseCase {

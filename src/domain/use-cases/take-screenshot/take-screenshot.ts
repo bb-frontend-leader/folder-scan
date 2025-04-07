@@ -1,5 +1,5 @@
-import { Screenshot } from "@domain/entities/screenshot.entity";
-import { ScreenshotRepository } from "@domain/repository/screenshot.repository";
+import { Screenshot } from "../../entities/screenshot.entity";
+import { ScreenshotRepository } from "../../repository/screenshot.repository";
 
 interface TakeScreenShotUseCase {
     execute: (name: string, url: string) => Promise<Screenshot>;
