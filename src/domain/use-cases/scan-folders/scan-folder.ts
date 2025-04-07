@@ -17,10 +17,15 @@ export class ScanFolder implements ScanFolderUseCase {
         private readonly takeScreenShot: TakeScreenShot,
     ) { }
 
+    private cleanPath(path: string): string {
+        const CLEAN_REGEX = /(\.\.\/)+/g
+        return path.replace(CLEAN_REGEX, '');
+    }
+
     public async execute(ovasPath: string): Promise<void> {
         const folders = await this.getFolders(ovasPath);
         for (const folder of folders) {
-            const screenshot = await this.takeScreenShot.execute(`${folder.name}-${folder.parentPath}`, `${envs.SCREENSHOTS_STORAGE_URL}${folder.parentPath}/${folder.name}`);
+            const screenshot = await this.takeScreenShot.execute(`${folder.name}-${folder.parentPath}`, this.cleanPath(`${envs.SCREENSHOTS_STORAGE_URL}${folder.folderPath}`));
          
             if (!screenshot) {
                 console.error(`Screenshot failed for ${folder.name}`);
@@ -30,7 +35,7 @@ export class ScanFolder implements ScanFolderUseCase {
                 name: folder.name,
                 coverPath: screenshot.screenShotPath,
                 ovaPath: {
-                    server: `${envs.OVA_URL}${folder.parentPath}/${folder.name}`,
+                    server: this.cleanPath(`${envs.OVA_URL}${folder.folderPath}`),
                     local: folder.folderPath,
                 },
                 hasAudio: await this.hasFileType(folder.folderPath, 'Audio'),

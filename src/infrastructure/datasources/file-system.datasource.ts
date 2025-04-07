@@ -1,17 +1,17 @@
 import fs from 'node:fs'
 
+import { envs } from '../../config/plugins/envs.plugin';
 import { OvaDataSource } from "../../domain/datasources/ova.datasource";
 import { OvaEntity } from "../../domain/entities/ova.entity";
 
 export class FileSystemDataSource implements OvaDataSource {
 
-    private readonly ovaDir = 'data/';
-    private readonly ovaPath = 'data/ovas.json';
+    private readonly ovaDir = envs.DATA_STORAGE_URL;
+    private readonly ovaPath = envs.DATA_STORAGE_URL + '/' + envs.DATA_STORAGE_FILE;
 
     constructor() {
         this.initializeOvaDir();
         this.initializeBaseOvaFile();
-        
     }
 
     private async initializeOvaDir() {

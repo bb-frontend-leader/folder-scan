@@ -38,7 +38,7 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
         console.log('✅ Screenshot process completed!');
         console.log('-----------------------------------\n');
 
-        const cleanPath = screenShotPath.replace(/^\.\/?/, '');
+        const cleanPath = screenShotPath.replace(/(\.\.\/)+/g, '');
         const screenShotImagePath = `${envs.SCREENSHOTS_STORAGE_URL}${cleanPath}`
 
         return new Screenshot(screenShotImagePath);
