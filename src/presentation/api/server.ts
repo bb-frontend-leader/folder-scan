@@ -14,7 +14,7 @@ export class Server {
         this.app.use(json());
         this.app.use(corsMiddleware())
         this.app.disable('x-powered-by');
-        this.app.use('/api/ovas', ovasRouter)
+        this.app.use('/', ovasRouter)
     }
 
     public start(): void {

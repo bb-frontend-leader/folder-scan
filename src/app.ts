@@ -1,4 +1,3 @@
-
 import { Server } from "./presentation/api/server";
 import { Cli } from "./presentation/cli/cli";
 

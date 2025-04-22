@@ -1,11 +1,11 @@
 import fs from 'node:fs';
-import { env } from 'node:process';
 
+import { envs } from '../../../../config/plugins/envs.plugin'
 import { OvaEntity } from '../../../../domain/entities/ova.entity';
 
 
 export class OvasModel {
-    private static readonly ovaPath = env.DATA_STORAGE_URL + '/' + env.DATA_STORAGE_FILE;
+    private static readonly ovaPath = envs.DATA_STORAGE_URL + '/' + envs.DATA_STORAGE_FILE;
 
     static async getAllOvas() {
         const data = fs.readFileSync(this.ovaPath, 'utf-8');
