@@ -9,4 +9,7 @@ export const envs = {
     OVA_URL: env.get('OVA_URL').required().asString(),
     DATA_STORAGE_URL: env.get('DATA_STORAGE_PATH').required().asString(),
     DATA_STORAGE_FILE: env.get('DATA_STORAGE_FILE').required().asString(),
+    MAILER_SERVICE: env.get('MAILER_SERVICE').required().asString(),
+    MAILER_EMAIL: env.get('MAILER_EMAIL').required().asEmailString(),
+    MAILER_SECRET_KEY: env.get('MAILER_SECRET_KEY').required().asString(),
 }
