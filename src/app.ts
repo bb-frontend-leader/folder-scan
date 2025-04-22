@@ -11,8 +11,11 @@ function main() {
     const api = new Server(3001)
     api.start()
 
+    // CLI
+    Cli.execute();
+
     CronService.startCronJob("30 10 * * *", () => {
-        // CLI
+        // Cron job to run every day at 5:30 AM
         Cli.execute();
     })
 }
