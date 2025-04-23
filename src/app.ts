@@ -14,7 +14,7 @@ function main() {
     // CLI
     Cli.execute();
 
-    CronService.startCronJob("30 10 * * *", () => {
+    CronService.startCronJob("30 5 * * *", () => {
         // Cron job to run every day at 5:30 AM
         Cli.execute();
     })
