@@ -83,19 +83,21 @@ export class ScanFolder implements ScanFolderUseCase {
 
     private async getFolders(folderPath: string): Promise<{ name: string, parentPath: string, folderPath: string }[]> {
         const folders: { name: string, parentPath: string, folderPath: string }[] = [];
+        const folderPaths = new Set<string>(); // Para rastrear las rutas ya añadidas
         const REGEX = /[^/]+\/?$/; // Regular expression to match folder names
-
+    
         const traverseFolders = async (currentPath: string): Promise<void> => {
             try {
                 const files = await fs.readdir(currentPath, { withFileTypes: true });
                 for (const file of files) {
                     if (file.isDirectory()) {
                         const fullPath = `${currentPath}/${file.name}`
-                        if (file.name.startsWith('ova-')) {
+                        if (file.name.startsWith('ova-') && !folderPaths.has(fullPath)) {
                             const parentPath = (currentPath.match(REGEX) || [''])[0]
                             folders.push({ name: file.name, parentPath, folderPath: fullPath });
+                            folderPaths.add(fullPath);
                         }
-                        await traverseFolders(fullPath); // Recursively search subfolders
+                        await traverseFolders(fullPath); // Continuamos la búsqueda recursiva en todas las carpetas
                     }
                 }
             } catch (error) {
@@ -103,7 +105,7 @@ export class ScanFolder implements ScanFolderUseCase {
                 throw error;
             }
         };
-
+    
         await traverseFolders(folderPath);
         return folders;
     }
