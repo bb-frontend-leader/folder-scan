@@ -1,3 +1,4 @@
+import { envs } from "./config/plugins/envs.plugin";
 import { CronService } from "./infrastructure/services/cron.service";
 import { Server } from "./presentation/api/server";
 import { Cli } from "./presentation/cli/cli";
@@ -8,7 +9,7 @@ import { Cli } from "./presentation/cli/cli";
 
 function main() {
     // Server
-    const api = new Server(3001)
+    const api = new Server(envs.SERVER_PORT)
     api.start()
 
     // CLI
