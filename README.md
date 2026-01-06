@@ -138,7 +138,7 @@ folder-scan/
 
 ## Cron Schedule
 
-The application runs an automatic scan every day at **5:30 AM** by default. This can be modified in `src/app.ts`.
+The application runs an automatic scan every day at **5:30 AM** (local system time) by default. This can be modified in `src/app.ts`.
 
 ## Author
 
