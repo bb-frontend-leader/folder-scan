@@ -34,11 +34,14 @@ export class Cli {
             console.log('✅ Scan process completed successfully! 🎉 All folders have been processed.');
             emailService.sendEmail({
                 to: 'Coor_frontend@booksandbooksdigital.com.co',
-                subject: '✅ Scan process completed successfully! 🎉',
+                subject: `✅ Scan completed successfully for ${envs.OVA_URL} 🎉`,
                 htmlBody: `
-                    <h1>✅ Scan process completed successfully! 🎉</h1>
-                    <p>📂 All folders have been processed.</p>
-                    <p>📚 Scan data output: ovas.json</p>
+                    <h1>✅ Scan Process Completed Successfully! 🎉</h1>
+                    <p>📂 All folders have been successfully processed and analyzed.</p>
+                    <p>📚 Scan results saved to: <strong>ovas.json</strong></p>
+                    <p>🌐 Project: <a href="${envs.OVA_URL}">${envs.OVA_URL}</a></p>
+                    <p>📁 Scanned directory: ${envs.SCAN_FOLDER_PATH}</p>
+                    <p>📷 Screenshots saved to: ${envs.SCREENSHOTS_STORAGE_PATH}</p>
                 `,
             })
 
