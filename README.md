@@ -1,153 +1,140 @@
-# Folder Scan
+# 🔎 Folder Scan
 
-A Node.js application that scans folders and catalogs files not present in the database. It uses Puppeteer to automatically take screenshots of files and provides both CLI and API interfaces.
+🧩 Folder Scan es una aplicación en Node.js que escanea carpetas de forma automática. Utiliza Puppeteer para tomar capturas de pantalla de archivos y ofrece interfaces tanto CLI como API REST.
 
-## Features
+## ✨ Features
 
-- 📁 **Folder Scanning**: Recursively scans specified directories
-- 📸 **Screenshot Capture**: Uses Puppeteer to take screenshots of files
-- 🗄️ **Database Integration**: Tracks files and compares against existing records
-- ⏰ **Scheduled Scans**: Automated daily scans using cron jobs (default: 5:30 AM)
-- 🌐 **REST API**: Express server for programmatic access
-- 📧 **Email Notifications**: Sends completion reports via email
-- 📦 **ZIP Support**: Handles ZIP file operations with JSZip
+- 📁 **Folder Scanning**: Escaneo recursivo de directorios configurados.
+- 📸 **Screenshot Capture**: Capturas automáticas usando Puppeteer.
+- ⏰ **Scheduled Scans**: Escaneos diarios programados con cron (por defecto: 5:30 AM).
+- 🌐 **REST API**: Servidor Express para acceso programático.
+- 📧 **Email Notifications**: Reportes de finalización enviados por correo.
+- 📦 **ZIP Support**: Manejo de archivos ZIP con JSZip.
 
-## Prerequisites
+## ⚙️ Prerequisites
 
-- Node.js (v14 or higher recommended)
-- npm or yarn package manager
+- 🟢 **Node.js** (v14 o superior recomendado)
+- 📦 **npm** o **yarn**
 
-## Installation
+## 🚀 Installation
 
-1. Clone the repository:
+1. Clonar el repositorio:
 ```bash
 git clone https://github.com/bb-frontend-leader/folder-scan.git
 cd folder-scan
 ```
 
-2. Install dependencies:
+2. Instalar dependencias:
 ```bash
 npm install
 ```
 
-3. Configure environment variables:
+3. Configurar variables de entorno:
 ```bash
 cp .env.template .env
 ```
 
-Edit the `.env` file with your configuration (see [Configuration](#configuration) section).
+✏️ Edita el archivo `.env` con tu configuración (ver sección de [Configuración](#configuration)).
 
-## Configuration
+## 🔧 Configuration
 
-Create a `.env` file in the root directory with the following variables:
+Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
 ```env
-# Path to the folder to scan
+# 📂 Ruta de la carpeta a escanear
 SCAN_FOLDER_PATH='/path/to/scan'
 
-# Path where the data will be stored
+# 💾 Ruta donde se almacenarán los datos
 DATA_STORAGE_PATH='/path/to/data'
 
-# Name of the file where the data will be stored
+# 📄 Nombre del archivo de salida
 DATA_STORAGE_FILE='ovas.json'
 
-# Path where screenshots will be stored
+# 🖼️ Ruta donde se guardarán las capturas
 SCREENSHOTS_STORAGE_PATH='/path/to/screenshots'
 
-# Base URL for the screenshots
+# 🌐 URL base para las capturas
 SCREENSHOT_URL_BASE='http://example.com/screenshots'
 
-# URL for the OVA files
+# 🔗 URL para los archivos OVA
 OVA_URL='http://example.com/ova'
 ```
 
-## Usage
+## ▶️ Usage
 
-### Development Mode
+### 🧪 Development Mode
 
-Run the application in development mode with hot-reload:
+Ejecuta la aplicación en modo desarrollo con recarga automática:
 
 ```bash
 npm run dev
 ```
 
-### Production Mode
+### 🏗️ Production Mode
 
-1. Build the TypeScript project:
+1. Compilar el proyecto TypeScript:
 ```bash
 npm run build
 ```
 
-2. Start the application:
+2. Iniciar la aplicación:
 ```bash
 npm start
 ```
 
-### CLI Mode
+### 💻 CLI Mode
 
-The CLI automatically executes when the application starts and performs the following:
-- Scans the configured folder path
-- Takes screenshots of discovered files
-- Saves results to `ovas.json`
-- Sends an email notification upon completion
+El CLI se ejecuta automáticamente al iniciar la aplicación y realiza:
+- 🔍 Escaneo de la carpeta configurada.
+- 📸 Captura de pantallas de los archivos encontrados.
+- 💾 Guardado de resultados en `ovas.json`.
+- 📧 Envío de notificación por correo al finalizar.
 
-### API Server
+### 🌐 API Server
 
-The Express server starts automatically on the configured port and provides REST endpoints for interacting with the application.
+El servidor Express se inicia automáticamente y expone endpoints REST para interactuar con la aplicación de forma programática.
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 folder-scan/
 ├── src/
-│   ├── app.ts                    # Application entry point
-│   ├── config/                   # Configuration files
-│   ├── domain/                   # Domain layer (business logic)
-│   │   ├── datasources/          # Data source interfaces
-│   │   ├── entities/             # Domain entities
-│   │   ├── repository/           # Repository interfaces
-│   │   └── use-cases/            # Business use cases
-│   ├── infrastructure/           # Infrastructure layer
-│   │   ├── datasources/          # Data source implementations
-│   │   ├── repositories/         # Repository implementations
-│   │   └── services/             # External services (Puppeteer, Email, Cron)
-│   └── presentation/             # Presentation layer
-│       ├── api/                  # REST API (Express server)
-│       └── cli/                  # Command-line interface
-├── dist/                         # Compiled JavaScript output
-├── .env.template                 # Environment variable template
-├── package.json                  # Project dependencies and scripts
-└── tsconfig.json                 # TypeScript configuration
+│   ├── app.ts                    # 🚪 Punto de entrada de la aplicación
+│   ├── config/                   # ⚙️ Configuración
+│   ├── domain/                   # 🧠 Lógica de negocio
+│   │   ├── datasources/
+│   │   ├── entities/
+│   │   ├── repository/
+│   │   └── use-cases/
+│   ├── infrastructure/           # 🏗️ Infraestructura
+│   │   ├── datasources/
+│   │   ├── repositories/
+│   │   └── services/             # Puppeteer, Email, Cron
+│   └── presentation/             # 🎨 Presentación
+│       ├── api/                  # API REST
+│       └── cli/                  # CLI
+├── dist/                         # 📦 Código compilado
+├── .env.template
+├── package.json
+└── tsconfig.json
 ```
 
-## Scripts
+## 📜 Scripts
 
-- `npm run build` - Compile TypeScript to JavaScript
-- `npm start` - Build and run the application
-- `npm run dev` - Run in development mode with auto-reload
+- 🛠️ `npm run build` - Compila TypeScript a JavaScript
+- ▶️ `npm start` - Construye y ejecuta la aplicación
+- 🔁 `npm run dev` - Modo desarrollo con auto-reload
 
-## Technologies Used
+## ⏰ Cron Schedule
 
-- **TypeScript** - Type-safe JavaScript
-- **Express** - Web server framework
-- **Puppeteer** - Browser automation for screenshots
-- **Cron** - Scheduled task execution
-- **Nodemailer** - Email notifications
-- **JSZip** - ZIP file handling
-- **dotenv** - Environment variable management
+La aplicación ejecuta un escaneo automático todos los días a las **5:30 AM** (hora local).
+Este valor puede modificarse en src/app.ts.
 
-## Cron Schedule
+## ❤️ Hecho con el 💙 en Books&Books  
 
-The application runs an automatic scan every day at **5:30 AM** (local system time) by default. This can be modified in `src/app.ts`.
+Nos enorgullece desarrollar este proyecto como parte del compromiso de **Books&Books** con la educación y la innovación tecnológica. 🌟  
 
-## Author
+Gracias por visitar nuestro proyecto. ¡Juntos podemos hacer del aprendizaje una experiencia increíble! 🥳✨
 
-**Alejandro Repizo**
 
-## License
 
-ISC
-
-## Keywords
-
-folder, scan, files, database, puppeteer, screenshot
