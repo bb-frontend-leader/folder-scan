@@ -41,23 +41,36 @@ cp .env.template .env
 Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
 ```env
+# �️ Puerto del servidor
+SERVER_PORT=3001
+
 # 📂 Ruta de la carpeta a escanear
 SCAN_FOLDER_PATH='/path/to/scan'
 
 # 💾 Ruta donde se almacenarán los datos
-DATA_STORAGE_PATH='/path/to/data'
+DATA_STORAGE_PATH='./data'
 
 # 📄 Nombre del archivo de salida
-DATA_STORAGE_FILE='ovas.json'
+DATA_STORAGE_FILE='data.json'
 
 # 🖼️ Ruta donde se guardarán las capturas
 SCREENSHOTS_STORAGE_PATH='/path/to/screenshots'
 
 # 🌐 URL base para las capturas
-SCREENSHOT_URL_BASE='http://example.com/screenshots'
+SCREENSHOT_URL_BASE='https://example.com/screenshots/'
 
 # 🔗 URL para los archivos OVA
-OVA_URL='http://example.com/ova'
+OVA_URL='https://example.com/ovas/'
+
+# 📧 Servicio de email (gmail, sendgrid, etc.)
+MAILER_SERVICE=gmail
+
+# 📨 Dirección de correo del remitente
+MAILER_EMAIL=your-email@gmail.com
+
+# 🔑 Clave secreta del servicio de email
+# Nota: Para Gmail, necesitas configurar una App Password si tienes 2-Step Verification habilitada
+MAILER_SECRET_KEY=your-app-password-here
 ```
 
 ## ▶️ Usage
