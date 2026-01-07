@@ -8,7 +8,10 @@ import { ScreenshotRepository } from '../../domain/repository/screenshot.reposit
 
 
 export class PuppeteerScreenShotService implements ScreenshotRepository {
-    constructor (public readonly path: string){}
+    private readonly maxRetries = 3;
+    private readonly timeout = 60000; // 60 segundos
+
+    constructor(public readonly path: string) { }
 
     public async takeScreenshot(name: string, url: string): Promise<Screenshot> {
         const screenShotPath = `${this.path}/${name}.png`;
@@ -19,28 +22,88 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
 
         console.log('\n📸 Starting screenshot process...');
         console.log('-----------------------------------');
-        console.log('🖥️  Launching browser...');
+        console.log(`📝 Target: ${name}`);
 
-        const browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
+        let lastError: Error | null = null;
 
-        console.log('🌐 Navigating to URL...');
-        console.log(`   URL: ${url}`);
+        // Intentar hasta 3 veces
+        for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+            try {
+                console.log(`🔄 Attempt ${attempt}/${this.maxRetries}`);
+                console.log('🖥️  Launching browser...');
 
-        await page.goto(url, { waitUntil: 'networkidle2' });
+                const browser = await puppeteer.launch({
+                    headless: true,
+                    args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-accelerated-2d-canvas',
+                        '--disable-gpu'
+                    ]
+                });
 
-        console.log('🤳 Capturing screenshot...');
-        console.log(`   Saving to: ${screenShotPath}`);
+                const page = await browser.newPage();
 
-        await page.screenshot({ path: screenShotPath });
-        await browser.close();
+                // Configurar timeout y viewport
+                page.setDefaultNavigationTimeout(this.timeout);
+                page.setDefaultTimeout(this.timeout);
+                await page.setViewport({ width: 1280, height: 720 });
 
-        console.log('✅ Screenshot process completed!');
-        console.log('-----------------------------------\n');
+                console.log('🌐 Navigating to URL...');
+                console.log(`   URL: ${url}`);
 
-        const cleanPath = screenShotPath.replace(/(\.\.\/)+/g, '');
-        const screenShotImagePath = `${envs.SCREENSHOTS_STORAGE_URL}${cleanPath}`
+                // Intentar con diferentes estrategias de espera
+                try {
+                    await page.goto(url, {
+                        waitUntil: 'networkidle2',
+                        timeout: this.timeout
+                    });
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                } catch (navError) {
+                    console.log('⚠️  networkidle2 timeout, trying with domcontentloaded...');
+                    await page.goto(url, {
+                        waitUntil: 'domcontentloaded',
+                        timeout: this.timeout
+                    });
+                    // Esperar un poco más para que cargue contenido
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                }
 
-        return new Screenshot(screenShotImagePath);
+                console.log('🤳 Capturing screenshot...');
+                console.log(`   Saving to: ${screenShotPath}`);
+
+                await page.screenshot({
+                    path: screenShotPath,
+                    fullPage: false
+                });
+
+                await browser.close();
+
+                console.log('✅ Screenshot process completed!');
+                console.log('-----------------------------------\n');
+
+                const cleanPath = screenShotPath.replace(/(\.\.\/)+/g, '');
+                const screenShotImagePath = `${envs.SCREENSHOTS_STORAGE_URL}${cleanPath}`
+
+                return new Screenshot(screenShotImagePath);
+
+            } catch (error) {
+                lastError = error as Error;
+                console.error(`❌ Attempt ${attempt} failed:`, error instanceof Error ? error.message : error);
+
+                if (attempt < this.maxRetries) {
+                    const waitTime = attempt * 2000; // Espera incremental: 2s, 4s
+                    console.log(`⏳ Waiting ${waitTime / 1000}s before retry...`);
+                    await new Promise(resolve => setTimeout(resolve, waitTime));
+                }
+            }
+        }
+
+        // Si llegamos aquí, todos los intentos fallaron
+        console.error('❌ All retry attempts failed!');
+        console.error('-----------------------------------\n');
+
+        throw new Error(`Failed to take screenshot after ${this.maxRetries} attempts: ${lastError?.message}`);
     }
 }
