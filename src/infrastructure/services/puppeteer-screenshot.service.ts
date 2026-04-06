@@ -28,11 +28,12 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
 
         // Intentar hasta 3 veces
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
+            let browser = null;
             try {
                 console.log(`🔄 Attempt ${attempt}/${this.maxRetries}`);
                 console.log('🖥️  Launching browser...');
 
-                const browser = await puppeteer.launch({
+                browser = await puppeteer.launch({
                     headless: true,
                     args: [
                         '--no-sandbox',
@@ -78,8 +79,6 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
                     fullPage: false
                 });
 
-                await browser.close();
-
                 console.log('✅ Screenshot process completed!');
                 console.log('-----------------------------------\n');
 
@@ -96,6 +95,10 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
                     const waitTime = attempt * 2000; // Espera incremental: 2s, 4s
                     console.log(`⏳ Waiting ${waitTime / 1000}s before retry...`);
                     await new Promise(resolve => setTimeout(resolve, waitTime));
+                }
+            } finally {
+                if (browser) {
+                    await browser.close().catch(() => {});
                 }
             }
         }
