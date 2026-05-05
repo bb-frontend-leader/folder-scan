@@ -140,8 +140,8 @@ folder-scan/
 
 ## ⏰ Cron Schedule
 
-La aplicación ejecuta un escaneo automático todos los días a las **5:30 AM** (hora local).
-Este valor puede modificarse en src/app.ts.
+La aplicación ejecuta un escaneo automático todos los días a las **3:00 AM** (hora local).
+Este valor puede modificarse usando la variable CRON_SCHEDULE en el .env.
 
 ## ❤️ Hecho con el 💙 en Books&Books  
 
