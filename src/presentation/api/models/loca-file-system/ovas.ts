@@ -9,15 +9,16 @@ export class OvasModel {
 
     static async getAllOvas() {
         const data = fs.readFileSync(this.ovaPath, 'utf-8');
-        const ovas = JSON.parse(data);
-        return ovas;
+        const ovas = JSON.parse(data) as OvaEntity[];
+        return ovas.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
     }
 
     static async getAllOvaGroups() {
         const data = fs.readFileSync(this.ovaPath, 'utf-8');
         const ovas = JSON.parse(data) as OvaEntity[];
         // Extraer los grupos de OVA únicos
-        return Array.from(new Set(ovas.map(ova => ova.parentFolder)));
+        return Array.from(new Set(ovas.map(ova => ova.parentFolder)))
+            .sort((a, b) => (a ?? '').localeCompare(b ?? '', undefined, { numeric: true, sensitivity: 'base' }));
     }
 
     static async getOvaById(id: string) {
