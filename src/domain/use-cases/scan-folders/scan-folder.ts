@@ -30,53 +30,59 @@ export class ScanFolder implements ScanFolderUseCase {
         console.log(`\n📊 Total folders to process: ${folders.length}`);
         console.log('='.repeat(50) + '\n');
 
-        for (let i = 0; i < folders.length; i++) {
-            const folder = folders[i];
-            console.log(`\n[${i + 1}/${folders.length}] Processing: ${folder.name}`);
-            
-            try {
-                let screenshot;
+        await this.takeScreenShot.init();
+
+        try {
+            for (let i = 0; i < folders.length; i++) {
+                const folder = folders[i];
+                console.log(`\n[${i + 1}/${folders.length}] Processing: ${folder.name}`);
+
                 try {
-                    screenshot = await this.takeScreenShot.execute(
-                        `${folder.name}-${folder.parentPath}`, 
-                        this.cleanPath(`${envs.SCREENSHOTS_STORAGE_URL}${folder.folderPath}`)
-                    );
-                } catch (screenshotError) {
-                    console.error(`⚠️  Screenshot failed for ${folder.name}, using placeholder`);
-                    console.error(`   Error: ${screenshotError instanceof Error ? screenshotError.message : screenshotError}`);
-                    
-                    // Continuar sin screenshot válido
-                    screenshot = { screenShotPath: 'placeholder.png' };
+                    let screenshot;
+                    try {
+                        screenshot = await this.takeScreenShot.execute(
+                            `${folder.name}-${folder.parentPath}`,
+                            this.cleanPath(`${envs.SCREENSHOTS_STORAGE_URL}${folder.folderPath}`)
+                        );
+                    } catch (screenshotError) {
+                        console.error(`⚠️  Screenshot failed for ${folder.name}, using placeholder`);
+                        console.error(`   Error: ${screenshotError instanceof Error ? screenshotError.message : screenshotError}`);
+
+                        // Continuar sin screenshot válido
+                        screenshot = { screenShotPath: 'placeholder.png' };
+                    }
+
+                    if (!screenshot) {
+                        console.error(`❌ Screenshot failed for ${folder.name}`);
+                        screenshot = { screenShotPath: 'placeholder.png' };
+                    }
+
+                    const ova = new OvaEntity({
+                        name: folder.name,
+                        coverPath: screenshot.screenShotPath,
+                        ovaPath: {
+                            server: this.cleanPath(`${envs.OVA_URL}${folder.folderPath}`),
+                            local: folder.folderPath,
+                        },
+                        hasAudio: await this.hasFileType(folder.folderPath, 'Audio'),
+                        hasAudioDescription: await this.hasFileType(folder.folderPath, 'AudioDescription'),
+                        hasSubtitles: await this.hasFileType(folder.folderPath, 'Subtitles'),
+                        parentFolder: folder.parentPath,
+                        hasVideo: await this.hasFileType(folder.folderPath, 'Video'),
+                        hasVideoSignLanguage: await this.hasFileType(folder.folderPath, 'VideoSignLanguage'),
+                    });
+
+                    this.ovaRepository.save(ova);
+                    successCount++;
+                    console.log(`✅ [${i + 1}/${folders.length}] Successfully processed: ${folder.name}`);
+                } catch (error) {
+                    failureCount++;
+                    console.error(`❌ [${i + 1}/${folders.length}] Failed to process ${folder.name}:`, error instanceof Error ? error.message : error);
+                    // Continuar con el siguiente folder en caso de error
                 }
-
-                if (!screenshot) {
-                    console.error(`❌ Screenshot failed for ${folder.name}`);
-                    screenshot = { screenShotPath: 'placeholder.png' };
-                }
-
-                const ova = new OvaEntity({
-                    name: folder.name,
-                    coverPath: screenshot.screenShotPath,
-                    ovaPath: {
-                        server: this.cleanPath(`${envs.OVA_URL}${folder.folderPath}`),
-                        local: folder.folderPath,
-                    },
-                    hasAudio: await this.hasFileType(folder.folderPath, 'Audio'),
-                    hasAudioDescription: await this.hasFileType(folder.folderPath, 'AudioDescription'),
-                    hasSubtitles: await this.hasFileType(folder.folderPath, 'Subtitles'),
-                    parentFolder: folder.parentPath,
-                    hasVideo: await this.hasFileType(folder.folderPath, 'Video'),
-                    hasVideoSignLanguage: await this.hasFileType(folder.folderPath, 'VideoSignLanguage'),
-                });
-
-                this.ovaRepository.save(ova);
-                successCount++;
-                console.log(`✅ [${i + 1}/${folders.length}] Successfully processed: ${folder.name}`);
-            } catch (error) {
-                failureCount++;
-                console.error(`❌ [${i + 1}/${folders.length}] Failed to process ${folder.name}:`, error instanceof Error ? error.message : error);
-                // Continuar con el siguiente folder en caso de error
             }
+        } finally {
+            await this.takeScreenShot.dispose();
         }
 
         console.log('\n' + '='.repeat(50));

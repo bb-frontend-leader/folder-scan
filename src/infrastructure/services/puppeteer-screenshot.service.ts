@@ -1,6 +1,6 @@
 
 import fs from 'node:fs';
-import puppeteer from 'puppeteer';
+import puppeteer, { Browser } from 'puppeteer';
 
 import { envs } from '../../config/plugins/envs.plugin'
 import { Screenshot } from '../../domain/entities/screenshot.entity';
@@ -10,8 +10,32 @@ import { ScreenshotRepository } from '../../domain/repository/screenshot.reposit
 export class PuppeteerScreenShotService implements ScreenshotRepository {
     private readonly maxRetries = 3;
     private readonly timeout = 60000; // 60 segundos
+    private browser: Browser | null = null;
 
     constructor(public readonly path: string) { }
+
+    public async init(): Promise<void> {
+        if (this.browser && this.browser.isConnected()) return;
+
+        console.log('🖥️  Launching browser...');
+        this.browser = await puppeteer.launch({
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu'
+            ]
+        });
+    }
+
+    public async dispose(): Promise<void> {
+        if (this.browser) {
+            await this.browser.close().catch(() => {});
+            this.browser = null;
+        }
+    }
 
     public async takeScreenshot(name: string, url: string): Promise<Screenshot> {
         const screenShotPath = `${this.path}/${name}.png`;
@@ -28,23 +52,15 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
 
         // Intentar hasta 3 veces
         for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
-            let browser = null;
+            let page = null;
             try {
                 console.log(`🔄 Attempt ${attempt}/${this.maxRetries}`);
-                console.log('🖥️  Launching browser...');
 
-                browser = await puppeteer.launch({
-                    headless: true,
-                    args: [
-                        '--no-sandbox',
-                        '--disable-setuid-sandbox',
-                        '--disable-dev-shm-usage',
-                        '--disable-accelerated-2d-canvas',
-                        '--disable-gpu'
-                    ]
-                });
+                if (!this.browser || !this.browser.isConnected()) {
+                    await this.init();
+                }
 
-                const page = await browser.newPage();
+                page = await this.browser!.newPage();
 
                 // Configurar timeout y viewport
                 page.setDefaultNavigationTimeout(this.timeout);
@@ -97,8 +113,8 @@ export class PuppeteerScreenShotService implements ScreenshotRepository {
                     await new Promise(resolve => setTimeout(resolve, waitTime));
                 }
             } finally {
-                if (browser) {
-                    await browser.close().catch(() => {});
+                if (page) {
+                    await page.close().catch(() => {});
                 }
             }
         }
