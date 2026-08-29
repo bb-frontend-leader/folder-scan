@@ -33,7 +33,7 @@ export class Cli {
         ).execute(envs.SCAN_FOLDER_PATH).then(() => {
             console.log('✅ Scan process completed successfully! 🎉 All folders have been processed.');
             emailService.sendEmail({
-                to: 'Coor_frontend@booksandbooksdigital.com.co',
+                to: envs.NOTIFICATION_EMAIL,
                 subject: `✅ Scan completed successfully for ${envs.OVA_URL} 🎉`,
                 htmlBody: `
                     <h1>✅ Scan Process Completed Successfully! 🎉</h1>

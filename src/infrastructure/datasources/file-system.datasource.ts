@@ -21,7 +21,9 @@ export class FileSystemDataSource implements OvaDataSource {
     }
 
     private async initializeBaseOvaFile() {
-        fs.writeFileSync(this.ovaPath, '[]')
+        if (!fs.existsSync(this.ovaPath)) {
+            fs.writeFileSync(this.ovaPath, '[]');
+        }
     }
 
     public async save(ova: OvaEntity): Promise<void> {
