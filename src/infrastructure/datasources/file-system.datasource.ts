@@ -29,17 +29,18 @@ export class FileSystemDataSource implements OvaDataSource {
     public async save(ova: OvaEntity): Promise<void> {
         try {
             const data = fs.readFileSync(this.ovaPath, 'utf-8');
-            const ovas = JSON.parse(data);
-            
-            // Verificar si ya existe una OVA con el mismo nombre
-            const exists = (ovas as OvaEntity[]).some(existingOva => existingOva.ovaPath.local === ova.ovaPath.local);
-            
-            if (!exists) {
+            const ovas = JSON.parse(data) as OvaEntity[];
+
+            // Upsert por ovaPath.local: reemplaza si ya existe, inserta si no.
+            const index = ovas.findIndex(existingOva => existingOva.ovaPath.local === ova.ovaPath.local);
+
+            if (index === -1) {
                 ovas.push(ova);
-                fs.writeFileSync(this.ovaPath, JSON.stringify(ovas, null, 2));
             } else {
-                console.log(`OVA with name ${ova.name} already exists, skipping.`);
+                ovas[index] = ova;
             }
+
+            fs.writeFileSync(this.ovaPath, JSON.stringify(ovas, null, 2));
         } catch (error) {
             console.error('Error saving OVA:', error);
         }

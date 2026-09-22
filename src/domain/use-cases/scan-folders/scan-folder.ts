@@ -7,8 +7,10 @@ import { TakeScreenShot } from '../take-screenshot/take-screenshot';
 
 type FileType = 'Audio' | 'Video' | 'VideoSignLanguage' | 'Subtitles' | 'AudioDescription';
 
+export type ScanFolderResult = { successCount: number, failureCount: number, skippedCount: number };
+
 interface ScanFolderUseCase {
-    execute: (folderPath: string) => Promise<void>;
+    execute: (folderPath: string) => Promise<ScanFolderResult>;
 }
 
 export class ScanFolder implements ScanFolderUseCase {
@@ -22,22 +24,35 @@ export class ScanFolder implements ScanFolderUseCase {
         return path.replace(CLEAN_REGEX, '');
     }
 
-    public async execute(ovasPath: string): Promise<void> {
+    public async execute(ovasPath: string): Promise<ScanFolderResult> {
         const folders = await this.getFolders(ovasPath);
+        const existingOvas = await this.ovaRepository.get();
+        const existingByPath = new Map(existingOvas.map(ova => [ova.ovaPath.local, ova]));
         let successCount = 0;
         let failureCount = 0;
+        let skippedCount = 0;
 
         console.log(`\n📊 Total folders to process: ${folders.length}`);
         console.log('='.repeat(50) + '\n');
 
-        await this.takeScreenShot.init();
-
         try {
             for (let i = 0; i < folders.length; i++) {
                 const folder = folders[i];
-                console.log(`\n[${i + 1}/${folders.length}] Processing: ${folder.name}`);
 
                 try {
+                    const signature = await this.getFolderSignature(folder.folderPath);
+                    const existing = existingByPath.get(folder.folderPath);
+
+                    if (existing && existing.contentSignature === signature) {
+                        skippedCount++;
+                        console.log(`⏭️  [${i + 1}/${folders.length}] Sin cambios, se omite: ${folder.name}`);
+                        continue;
+                    }
+
+                    console.log(`\n[${i + 1}/${folders.length}] Processing: ${folder.name}`);
+
+                    await this.takeScreenShot.init();
+
                     let screenshot;
                     try {
                         screenshot = await this.takeScreenShot.execute(
@@ -58,6 +73,7 @@ export class ScanFolder implements ScanFolderUseCase {
                     }
 
                     const ova = new OvaEntity({
+                        id: existing?.id,
                         name: folder.name,
                         coverPath: screenshot.screenShotPath,
                         ovaPath: {
@@ -70,6 +86,7 @@ export class ScanFolder implements ScanFolderUseCase {
                         parentFolder: folder.parentPath,
                         hasVideo: await this.hasFileType(folder.folderPath, 'Video'),
                         hasVideoSignLanguage: await this.hasFileType(folder.folderPath, 'VideoSignLanguage'),
+                        contentSignature: signature,
                     });
 
                     this.ovaRepository.save(ova);
@@ -88,9 +105,34 @@ export class ScanFolder implements ScanFolderUseCase {
         console.log('\n' + '='.repeat(50));
         console.log('📊 Processing Summary:');
         console.log(`   ✅ Success: ${successCount}`);
+        console.log(`   ⏭️  Skipped (unchanged): ${skippedCount}`);
         console.log(`   ❌ Failures: ${failureCount}`);
         console.log(`   📦 Total: ${folders.length}`);
         console.log('='.repeat(50) + '\n');
+
+        return { successCount, failureCount, skippedCount };
+    }
+
+    private async getFolderSignature(folderPath: string): Promise<string> {
+        let maxMtimeMs = 0;
+        let fileCount = 0;
+
+        const walk = async (currentPath: string): Promise<void> => {
+            const entries = await fs.readdir(currentPath, { withFileTypes: true });
+            for (const entry of entries) {
+                const fullPath = `${currentPath}/${entry.name}`;
+                const stats = await fs.stat(fullPath);
+                maxMtimeMs = Math.max(maxMtimeMs, stats.mtimeMs);
+                if (entry.isDirectory()) {
+                    await walk(fullPath);
+                } else {
+                    fileCount++;
+                }
+            }
+        };
+
+        await walk(folderPath);
+        return `${fileCount}:${maxMtimeMs}`;
     }
 
     private async hasFileType(folderPath: string, fileType: FileType): Promise<boolean> {
@@ -123,23 +165,36 @@ export class ScanFolder implements ScanFolderUseCase {
         }
     }
 
+    private async isOvaFolder(folderPath: string): Promise<boolean> {
+        try {
+            const [assetsStat, indexStat] = await Promise.all([
+                fs.stat(`${folderPath}/assets`),
+                fs.stat(`${folderPath}/index.html`),
+            ]);
+            return assetsStat.isDirectory() && indexStat.isFile();
+        } catch {
+            return false;
+        }
+    }
+
     private async getFolders(folderPath: string): Promise<{ name: string, parentPath: string, folderPath: string }[]> {
         const folders: { name: string, parentPath: string, folderPath: string }[] = [];
         const folderPaths = new Set<string>(); // Para rastrear las rutas ya añadidas
         const REGEX = /[^/]+\/?$/; // Regular expression to match folder names
-    
+
         const traverseFolders = async (currentPath: string): Promise<void> => {
             try {
                 const files = await fs.readdir(currentPath, { withFileTypes: true });
                 for (const file of files) {
                     if (file.isDirectory()) {
                         const fullPath = `${currentPath}/${file.name}`
-                        if (file.name.startsWith('ova-') && !folderPaths.has(fullPath)) {
+                        if (!folderPaths.has(fullPath) && await this.isOvaFolder(fullPath)) {
                             const parentPath = (currentPath.match(REGEX) || [''])[0]
                             folders.push({ name: file.name, parentPath, folderPath: fullPath });
                             folderPaths.add(fullPath);
+                            continue; // Es una OVA: no seguir bajando dentro de su propia estructura interna
                         }
-                        await traverseFolders(fullPath); // Continuamos la búsqueda recursiva en todas las carpetas
+                        await traverseFolders(fullPath); // Continuamos la búsqueda recursiva en las carpetas que no son OVAs
                     }
                 }
             } catch (error) {
@@ -147,7 +202,7 @@ export class ScanFolder implements ScanFolderUseCase {
                 throw error;
             }
         };
-    
+
         await traverseFolders(folderPath);
         return folders;
     }

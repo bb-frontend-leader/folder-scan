@@ -30,8 +30,8 @@ export class Cli {
         new ScanFolder(
             fileSystemOvaRepository,
             PuppeteerScreenShot
-        ).execute(envs.SCAN_FOLDER_PATH).then(() => {
-            console.log('✅ Scan process completed successfully! 🎉 All folders have been processed.');
+        ).execute(envs.SCAN_FOLDER_PATH).then((result) => {
+            console.log(`✅ Scan process completed successfully! 🎉 All folders have been processed (${result.successCount} processed, ${result.skippedCount} unchanged, ${result.failureCount} failed).`);
             emailService.sendEmail({
                 to: envs.NOTIFICATION_EMAIL,
                 subject: `✅ Scan completed successfully for ${envs.OVA_URL} 🎉`,
