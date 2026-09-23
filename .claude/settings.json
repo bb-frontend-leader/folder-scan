@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/COORFRONT/Documents/Proyectos/OVA-MANAGER/ova-folder-scan-ui-vite/src/adapters/**)",
+      "Read(//c/Users/COORFRONT/Documents/Proyectos/OVA-MANAGER/ova-folder-scan-ui-vite/src/services/**)"
+    ]
+  }
+}
