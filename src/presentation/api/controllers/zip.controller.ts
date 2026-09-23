@@ -5,7 +5,7 @@ import { JSZipService } from "../../../infrastructure/services/jszip.service";
 import { OvasModel } from "../models/loca-file-system/ovas";
 
 export class ZipController {
-    static async downloadZip(req: Request, res: Response) {
+    static async downloadZip(req: Request<{ id: string }>, res: Response) {
         const {  id } = req.params;
         const ova = await OvasModel.getOvaById(id);
 
