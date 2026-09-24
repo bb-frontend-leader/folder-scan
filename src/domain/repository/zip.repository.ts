@@ -1,5 +1,5 @@
-
+import { Readable } from 'node:stream';
 
 export abstract class ZipRepository {
-    abstract createZip(folderPath: string): Promise<Buffer>;
+    abstract createZipStream(folderPath: string): Readable;
 }
